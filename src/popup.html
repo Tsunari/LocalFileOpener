@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Local File Opener</title>
+    <link rel="stylesheet" href="popup.css">
     <script src="popup.js"></script>
 </head>
 <body>
     <h1>Save Filepath</h1>
+    <!-- <label>
+        <input type="checkbox" id="darkModeToggle"> Dark Mode
+    </label> -->
+    <input type="text" id="filePathInput" placeholder='Enter file path e.g. "C:\Users\Username\Downloads\File.pdf"'>
     <button id="addFilePath">Add Filepath</button>
-    <h2>Saved Filespaths</h2>
+    <h2>Saved Filepaths</h2>
     <ul id="filePathsList"></ul>
 </body>
 </html>

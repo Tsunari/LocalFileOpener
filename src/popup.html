@@ -5,6 +5,7 @@
     <title>Local File Opener</title>
     <link rel="stylesheet" href="popup.css">
     <script src="popup.js"></script>
+    <script src="settings.js"></script>
 </head>
 <body>
     <div class="header">
@@ -18,6 +19,18 @@
                 <input type="checkbox" id="darkModeToggle">
                 <span class="slider round"></span>
             </label>
+        </div>
+    </div>
+    <div class="settings-path-container">
+        <div class="path-type-container">
+            <label for="pathTypeToggle">Web Path</label>
+            <label class="switch">
+                <input type="checkbox" id="pathTypeToggle">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="settings-container">
+            <a href="settings.html">Settings</a>
         </div>
     </div>
     <textarea id="filePathInput" placeholder='File path e.g. "C:\Users\Username\Downloads\File.pdf", each on a new line.&#10To save multiple filepaths on Windows select files and press CTRL + SHIFT + C.&#10Press "Add Filepath" to save.'></textarea>

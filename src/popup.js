@@ -7,16 +7,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const filePicker = document.getElementById('filePicker');
     const darkModeToggle = document.getElementById('darkModeToggle');
     const modeIcon = document.getElementById('modeIcon');
+    const pathTypeToggle = document.getElementById('pathTypeToggle');
 
-    // Load saved file paths and dark mode state from Local Storage
+    // Load saved file paths, dark mode state, and textarea input from Local Storage
     loadFilePaths();
     loadDarkModeState();
+    loadTextareaInput();
 
     // Event listeners
     addFilePathButton.addEventListener('click', handleAddFilePath);
     addGroupButton.addEventListener('click', handleAddGroup);
     filePicker.addEventListener('change', handleFilePickerChange);
     darkModeToggle.addEventListener('change', handleDarkModeToggle);
+    filePathInput.addEventListener('input', handleTextareaInput);
 
     function handleAddFilePath() {
         const newFilePaths = filePathInput.value.split('\n').map(filePath => filePath.trim()).filter(filePath => filePath);
@@ -47,9 +50,22 @@ document.addEventListener('DOMContentLoaded', function () {
         updateModeIcon(isDarkMode);
     }
 
+    function handleTextareaInput() {
+        chrome.storage.local.get({ persistentStorage: true }, (result) => {
+            if (result.persistentStorage) {
+                saveTextareaInput(filePathInput.value);
+            } else {
+                chrome.storage.local.remove('textareaInput');
+            }
+        });
+    }
+
     function convertToFileURL(filePath) {
         filePath = filePath.replace(/"/g, '');
-        return 'file:///' + filePath.replace(/\\/g, '/');
+        if (!pathTypeToggle.checked) {
+            return 'file:///' + filePath.replace(/\\/g, '/');
+        }
+        return filePath;
     }
 
     function saveFilePaths(filePaths) {
@@ -65,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function saveGroup(groupName) {
         chrome.storage.local.get({ groups: [] }, (result) => {
             const groups = result.groups;
-            groups.push({ name: groupName, filePaths: [], collapsed: true });
+            groups.push({ name: groupName, filePaths: [], collapsed: true, openInChromeGroup: false });
             chrome.storage.local.set({ groups: groups }, loadFilePaths);
         });
     }
@@ -105,8 +121,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     openAllButton.className = 'open-all';
                     openAllButton.addEventListener('click', (event) => {
                         event.stopPropagation();
-                        openAllFilesInGroup(event, group.filePaths);
+                        openAllFilesInGroup(event, group.filePaths, group.name, group.openInChromeGroup);
                     });
+
+                    const chromeGroupToggle = document.createElement('input');
+                    chromeGroupToggle.type = 'checkbox';
+                    chromeGroupToggle.checked = group.openInChromeGroup;
+                    chromeGroupToggle.addEventListener('change', (event) => {
+                        group.openInChromeGroup = event.target.checked;
+                        saveGroups(groups);
+                    });
+
+                    const chromeGroupLabel = document.createElement('label');
+                    chromeGroupLabel.className = 'switch';
+                    chromeGroupLabel.appendChild(chromeGroupToggle);
+                    chromeGroupLabel.appendChild(document.createElement('span')).className = 'slider round';
+
+                    const chromeGroupContainer = document.createElement('div');
+                    chromeGroupContainer.className = 'chrome-group-toggle';
+                    chromeGroupContainer.appendChild(document.createTextNode('Open in Chrome Group'));
+                    chromeGroupContainer.appendChild(chromeGroupLabel);
 
                     const deleteGroupIcon = document.createElement('img');
                     deleteGroupIcon.src = 'res/trash-light.png';
@@ -119,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const actionsContainer = document.createElement('div');
                     actionsContainer.style.display = 'flex';
                     actionsContainer.style.alignItems = 'center';
+                    actionsContainer.appendChild(chromeGroupContainer);
                     actionsContainer.appendChild(openAllButton);
                     actionsContainer.appendChild(deleteGroupIcon);
 
@@ -220,14 +255,51 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function openAllFilesInGroup(event, filePaths) {
-        if (event.shiftKey) {
-            chrome.windows.create({ url: filePaths.map(file => file.filePath) });
+    function openAllFilesInGroup(event, filePaths, groupName, openInChromeGroup) {
+        if (openInChromeGroup) {
+            if (event.shiftKey) {
+                showSnackbar('Chrome group shift-click functionality is currently not available.');
+            } else {
+                chrome.windows.getCurrent({ populate: true }, (currentWindow) => {
+                    const tabIds = [];
+                    filePaths.forEach(file => {
+                        chrome.tabs.create({ url: file.filePath, windowId: currentWindow.id, active: false }, (tab) => {
+                            tabIds.push(tab.id);
+                            if (tabIds.length === filePaths.length) {
+                                chrome.tabs.group({ tabIds: tabIds }, (groupId) => {
+                                    chrome.tabGroups.update(groupId, { title: groupName });
+                                });
+                            }
+                        });
+                    });
+                });
+            }
+        } else if (event.shiftKey) {
+            chrome.windows.create({ url: filePaths.map(file => file.filePath), focused: true });
         } else {
             filePaths.forEach(file => {
                 chrome.tabs.create({ url: file.filePath, active: false });
             });
         }
+    }
+
+    function showSnackbar(message) {
+        const snackbar = document.createElement('div');
+        snackbar.className = 'snackbar';
+        snackbar.textContent = message;
+        document.body.appendChild(snackbar);
+
+        setTimeout(() => {
+            snackbar.classList.add('show');
+        }, 100);
+
+        setTimeout(() => {
+            snackbar.classList.remove('show');
+            snackbar.classList.add('hide');
+            setTimeout(() => {
+                document.body.removeChild(snackbar);
+            }, 500);
+        }, 2000);
     }
 
     function moveFilePath(currentGroupIndex, filePathIndex, targetGroupIndex) {
@@ -298,5 +370,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateModeIcon(isDarkMode) {
         modeIcon.src = isDarkMode ? 'res/dark-mode-icon.png' : 'res/light-mode-icon.png';
+    }
+
+    function saveTextareaInput(input) {
+        chrome.storage.local.set({ textareaInput: input });
+    }
+
+    function loadTextareaInput() {
+        chrome.storage.local.get({ persistentStorage: false }, (storageResult) => {
+            if (storageResult.persistentStorage) {
+                chrome.storage.local.get({ textareaInput: '' }, (result) => {
+                    filePathInput.value = result.textareaInput;
+                });
+            } else {
+                filePathInput.value = '';
+            }
+        });
     }
 });

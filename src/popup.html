@@ -8,7 +8,10 @@
 </head>
 <body>
     <div class="header">
-        <h1>Save Filepath</h1>
+        <div class="title-container">
+            <img src="res/icon/icon-48.png" alt="App Icon" class="app-icon">
+            <h1>Local File Opener</h1>
+        </div>
         <div class="dark-mode-container">
             <img src="res/light-mode-icon.png" alt="Light Mode Icon" class="mode-icon" id="modeIcon">
             <label class="switch">
@@ -21,7 +24,10 @@
     <button id="filePickerButton">Pick File</button>
     <input type="file" id="filePicker" webkitdirectory style="display: none;">
     <button id="addFilePath">Add Filepath</button>
-    <h2>Saved Filepaths</h2>
+    <div class="filepaths-header">
+        <h2>Saved Filepaths</h2>
+        <button id="addGroupButton">Add Group</button>
+    </div>
     <ul id="filePathsList"></ul>
 </body>
 </html>

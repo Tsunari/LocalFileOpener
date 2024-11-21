@@ -77,6 +77,81 @@ button.delete {
     display: none; /* Hide the original delete button */
 }
 
+/* Group styles */
+.group {
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+}
+.group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+.group-content {
+    display: none;
+    margin-top: 10px;
+}
+.group.collapsed .group-content {
+    display: none;
+}
+.group.expanded .group-content {
+    display: block;
+}
+.group-header .delete-group {
+    margin-left: 10px;
+}
+.group-header .open-all {
+    margin-right: 10px;
+    padding: 5px 10px; /* Make the button smaller */
+    font-size: 14px; /* Adjust font size */
+}
+.group-header button {
+    margin-right: 10px;
+}
+
+/* Filepaths header styles */
+.filepaths-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+.filepaths-header h2 {
+    margin: 0;
+}
+.filepaths-header button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+/* Dropdown menu styles */
+select {
+    padding: 5px 5px;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+}
+select:focus {
+    outline: none;
+    border-color: #1E90FF;
+}
+body.dark-mode select {
+    background-color: #555;
+    color: #fff;
+    border: 1px solid #777;
+}
+body.dark-mode select:focus {
+    border-color: #1E90FF;
+}
+
 /* Dark mode styles */
 body.dark-mode {
     background-color: #333;
@@ -114,6 +189,9 @@ body.dark-mode a {
 body.dark-mode button.delete {
     background-color: #d32f2f;
 }
+body.dark-mode .group {
+    border: 1px solid #555;
+}
 
 /* Modern scrollbar */
 body::-webkit-scrollbar {
@@ -144,6 +222,15 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+.title-container {
+    display: flex;
+    align-items: center;
+}
+.app-icon {
+    width: 48px;
+    height: 48px;
+    margin-right: 10px;
 }
 .dark-mode-container {
     display: flex;
@@ -208,6 +295,7 @@ body.dark-mode .mode-icon {
     width: 20px;
     height: 20px;
     cursor: pointer;
+    margin-left: 10px; /* Add margin to position it properly */
 }
 body.dark-mode .trash-icon {
     content: url('res/trash-dark.png');

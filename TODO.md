@@ -14,7 +14,7 @@
 - [x] Icons and themes
 - [x] More Styling: border, groupboxes, icons...
 - [x] UI bug: weird black stroke after
-- [ ] Make the textarea save its input
+- [x] Make the textarea save its input
 - [ ] File Picker (does not work for security reasons)
 - [ ] Settings Window: Toggle save textarea input, website save toggle, show quicknotes Window
 - [ ] Quicknotes Window left of main popup

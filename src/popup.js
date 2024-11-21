@@ -8,15 +8,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const darkModeToggle = document.getElementById('darkModeToggle');
     const modeIcon = document.getElementById('modeIcon');
 
-    // Load saved file paths and dark mode state from Local Storage
+    // Load saved file paths, dark mode state, and textarea input from Local Storage
     loadFilePaths();
     loadDarkModeState();
+    loadTextareaInput();
 
     // Event listeners
     addFilePathButton.addEventListener('click', handleAddFilePath);
     addGroupButton.addEventListener('click', handleAddGroup);
     filePicker.addEventListener('change', handleFilePickerChange);
     darkModeToggle.addEventListener('change', handleDarkModeToggle);
+    filePathInput.addEventListener('input', handleTextareaInput);
 
     function handleAddFilePath() {
         const newFilePaths = filePathInput.value.split('\n').map(filePath => filePath.trim()).filter(filePath => filePath);
@@ -45,6 +47,16 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.classList.toggle('dark-mode', isDarkMode);
         saveDarkModeState(isDarkMode);
         updateModeIcon(isDarkMode);
+    }
+
+    function handleTextareaInput() {
+        chrome.storage.local.get({ persistentStorage: true }, (result) => {
+            if (result.persistentStorage) {
+                saveTextareaInput(filePathInput.value);
+            } else {
+                chrome.storage.local.remove('textareaInput');
+            }
+        });
     }
 
     function convertToFileURL(filePath) {
@@ -298,5 +310,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateModeIcon(isDarkMode) {
         modeIcon.src = isDarkMode ? 'res/dark-mode-icon.png' : 'res/light-mode-icon.png';
+    }
+
+    function saveTextareaInput(input) {
+        chrome.storage.local.set({ textareaInput: input });
+    }
+
+    function loadTextareaInput() {
+        chrome.storage.local.get({ persistentStorage: false }, (storageResult) => {
+            if (storageResult.persistentStorage) {
+                chrome.storage.local.get({ textareaInput: '' }, (result) => {
+                    filePathInput.value = result.textareaInput;
+                });
+            } else {
+                filePathInput.value = '';
+            }
+        });
     }
 });

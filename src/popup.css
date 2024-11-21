@@ -303,3 +303,30 @@ body.dark-mode .trash-icon {
 body:not(.dark-mode) .trash-icon {
     content: url('res/trash-light.png');
 }
+
+/* Settings link styles */
+.settings-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 5px;
+    text-align: right;
+}
+.settings-container a {
+    color: #1E90FF;
+    text-decoration: none;
+}
+.settings-container a:hover {
+    text-decoration: underline;
+}
+
+/* Back link styles */
+.back-container {
+    margin-top: 20px;
+}
+.back-container a {
+    color: #1E90FF;
+    text-decoration: none;
+}
+.back-container a:hover {
+    text-decoration: underline;
+}

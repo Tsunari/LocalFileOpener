@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Event listeners
     addFilePathButton.addEventListener('click', handleAddFilePath);
-    // filePickerButton.addEventListener('click', () => filePicker.click());
+    // DONT DELETE filePickerButton.addEventListener('click', () => filePicker.click());
     filePicker.addEventListener('change', handleFilePickerChange);
     darkModeToggle.addEventListener('change', handleDarkModeToggle);
 
@@ -69,7 +69,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     const link = document.createElement('a');
                     link.href = '#';
                     link.textContent = item.fileName; // Display the filename
-                    link.addEventListener('click', () => openFile(item.filePath));
+                    link.addEventListener('click', (event) => handleFileClick(event, item.filePath));
+                    link.addEventListener('auxclick', (event) => handleFileClick(event, item.filePath)); // Handle middle-click
 
                     const deleteIcon = document.createElement('img');
                     deleteIcon.src = 'res/trash-light.png';
@@ -84,8 +85,21 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function openFile(filePath) {
-        chrome.tabs.create({ url: filePath }, () => window.close());
+    function handleFileClick(event, filePath) {
+        event.preventDefault(); // Prevent default behavior
+
+        if (event.button === 1) { // Middle mouse button
+            chrome.tabs.create({ url: filePath, active: false });
+        } else if (event.ctrlKey || event.metaKey) { // Ctrl-click or Cmd-click
+            chrome.tabs.create({ url: filePath, active: false });
+        } else if (event.shiftKey) {
+            chrome.windows.create({ url: filePath });
+        } else { // Left-click
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                const currentTab = tabs[0];
+                chrome.tabs.update(currentTab.id, { url: filePath });
+            });
+        }
     }
 
     function deleteFilePath(index) {

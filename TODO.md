@@ -3,6 +3,7 @@
 ## High Priority
 - [ ] Groups
 - [ ] Bulk/Batch picking/opening
+- [x] Path opening into different windows or same window
 - [ ] Ability to move order of files
 - [x] Ability to save multiple paths at once
 - [ ] Toggle filepath view and filename view: needs storage of both in for example a json file

@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const filePicker = document.getElementById('filePicker');
     const darkModeToggle = document.getElementById('darkModeToggle');
     const modeIcon = document.getElementById('modeIcon');
+    const pathTypeToggle = document.getElementById('pathTypeToggle');
 
     // Load saved file paths, dark mode state, and textarea input from Local Storage
     loadFilePaths();
@@ -61,7 +62,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function convertToFileURL(filePath) {
         filePath = filePath.replace(/"/g, '');
-        return 'file:///' + filePath.replace(/\\/g, '/');
+        if (!pathTypeToggle.checked) {
+            return 'file:///' + filePath.replace(/\\/g, '/');
+        }
+        return filePath;
     }
 
     function saveFilePaths(filePaths) {

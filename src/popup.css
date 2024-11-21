@@ -307,7 +307,7 @@ body:not(.dark-mode) .trash-icon {
 /* Settings link styles */
 .settings-container {
     margin-top: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     margin-right: 5px;
     text-align: right;
 }
@@ -329,4 +329,30 @@ body:not(.dark-mode) .trash-icon {
 }
 .back-container a:hover {
     text-decoration: underline;
+}
+
+.path-type-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+}
+.path-type-container label {
+    margin-right: 5px;
+}
+
+.settings-path-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.setting-item label {
+    margin-right: 10px;
 }

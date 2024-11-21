@@ -16,7 +16,8 @@
 - [x] UI bug: weird black stroke after
 - [x] Make the textarea save its input
 - [ ] File Picker (does not work for security reasons)
-- [ ] Settings Window: Toggle save textarea input, website save toggle, show quicknotes Window
+- [x] Settings Window: Toggle save textarea input, show quicknotes Window
+- [x] Website save toggle
 - [ ] Quicknotes Window left of main popup
 - [ ] Maybe Icons for: Website 🌐 or File 📁
 

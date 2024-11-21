@@ -24,6 +24,30 @@ button {
     cursor: pointer;
     border-radius: 4px;
 }
+textarea {
+    padding: 10px;
+    font-size: 16px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: calc(100% - 25px);  /* Adjust width to fit next to the buttons */
+    height: 100px; /* Set a height for the textarea */
+    resize: vertical; /* Allow vertical resizing */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+textarea::-webkit-scrollbar {
+    width: 12px;
+}
+textarea::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+textarea::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 6px;
+}
+textarea::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 input[type="text"] {
     padding: 10px;
     font-size: 16px;
@@ -64,6 +88,20 @@ body.dark-mode h1, body.dark-mode h2 {
 }
 body.dark-mode button {
     background-color: #555;
+}
+body.dark-mode textarea {
+    background-color: #555;
+    color: #fff;
+    border: 1px solid #777;
+}
+body.dark-mode textarea::-webkit-scrollbar-track {
+    background: #444;
+}
+body.dark-mode textarea::-webkit-scrollbar-thumb {
+    background: #bbb;
+}
+body.dark-mode textarea::-webkit-scrollbar-thumb:hover {
+    background: #999;
 }
 body.dark-mode input[type="text"] {
     background-color: #555;

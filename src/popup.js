@@ -13,15 +13,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Event listeners
     addFilePathButton.addEventListener('click', handleAddFilePath);
-    filePickerButton.addEventListener('click', () => filePicker.click());
+    // filePickerButton.addEventListener('click', () => filePicker.click());
     filePicker.addEventListener('change', handleFilePickerChange);
     darkModeToggle.addEventListener('change', handleDarkModeToggle);
 
     function handleAddFilePath() {
-        const newFilePath = filePathInput.value;
-        if (newFilePath) {
-            saveFilePath(convertToFileURL(newFilePath));
-            filePathInput.value = ''; // Clear the input field
+        const newFilePaths = filePathInput.value.split('\n').map(filePath => filePath.trim()).filter(filePath => filePath);
+        if (newFilePaths.length > 0) {
+            saveFilePaths(newFilePaths);
+            // filePathInput.value = ''; // Clear the input field
         }
     }
 
@@ -44,11 +44,13 @@ document.addEventListener('DOMContentLoaded', function () {
         return 'file:///' + filePath.replace(/\\/g, '/');
     }
 
-    function saveFilePath(filePath) {
+    function saveFilePaths(filePaths) {
         chrome.storage.local.get({ filePaths: [] }, (result) => {
-            const filePaths = result.filePaths;
-            filePaths.push({ filePath: filePath, fileName: extractFileName(filePath) });
-            chrome.storage.local.set({ filePaths: filePaths }, loadFilePaths);
+            const existingFilePaths = result.filePaths;
+            filePaths.forEach(filePath => {
+                existingFilePaths.push({ filePath: convertToFileURL(filePath), fileName: extractFileName(filePath) });
+            });
+            chrome.storage.local.set({ filePaths: existingFilePaths }, loadFilePaths);
         });
     }
 
@@ -95,7 +97,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function extractFileName(filePath) {
-        return filePath.split('/').pop();
+        // Replace backslashes with forward slashes
+        const normalizedPath = filePath.replace(/"/g, '').replace(/\\/g, '/');
+        // Split the path and return the last part
+        return normalizedPath.split('/').pop();
     }
 
     function saveDarkModeState(isDarkMode) {

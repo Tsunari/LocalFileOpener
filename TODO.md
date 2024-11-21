@@ -7,7 +7,7 @@
 
 ## Low Priority
 - [x] Dark Mode (saved)
-- [ ] Icons and themes
+- [x] Icons and themes
 - [x] More Styling: border, groupboxes, icons...
 - [x] UI bug: weird black stroke after
 - [ ] File Picker (does not work for security reasons)

@@ -18,7 +18,7 @@ This is a simple Chrome extension that allows users to store, manage, and open l
 
 ## Installation
 
-1. Download or clone the repository.
+1. Download or clone the repository. (Download here https://github.com/Tsunari/LocalFileOpener/releases/latest)
 2. Navigate to `chrome://extensions/` in your Chrome browser.
 3. Enable **Developer mode** at the top right.
 4. Click **Load unpacked** and select the directory where the extension files are located.

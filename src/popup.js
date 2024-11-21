@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
     loadFilePaths();
     loadDarkModeState();
     loadTextareaInput();
+    loadPathTypeState();
 
     // Event listeners
     addFilePathButton.addEventListener('click', handleAddFilePath);
@@ -20,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
     filePicker.addEventListener('change', handleFilePickerChange);
     darkModeToggle.addEventListener('change', handleDarkModeToggle);
     filePathInput.addEventListener('input', handleTextareaInput);
+    pathTypeToggle.addEventListener('change', handlePathTypeToggle);
+    filePickerButton.addEventListener('click', handleFilePickerButton);
 
     function handleAddFilePath() {
         const newFilePaths = filePathInput.value.split('\n').map(filePath => filePath.trim()).filter(filePath => filePath);
@@ -58,6 +61,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 chrome.storage.local.remove('textareaInput');
             }
         });
+    }
+
+    function handlePathTypeToggle() {
+        const isWebPath = pathTypeToggle.checked;
+        savePathTypeState(isWebPath);
+    }
+
+    function handleFilePickerButton() {
+        showSnackbar('File picker is not supported.');
     }
 
     function convertToFileURL(filePath) {
@@ -385,6 +397,17 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 filePathInput.value = '';
             }
+        });
+    }
+
+    function savePathTypeState(isWebPath) {
+        chrome.storage.local.set({ pathType: isWebPath });
+    }
+
+    function loadPathTypeState() {
+        chrome.storage.local.get({ pathType: false }, (result) => {
+            const isWebPath = result.pathType;
+            pathTypeToggle.checked = isWebPath;
         });
     }
 });

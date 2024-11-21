@@ -2,97 +2,116 @@ document.addEventListener('DOMContentLoaded', function () {
     const filePathsList = document.getElementById('filePathsList');
     const addFilePathButton = document.getElementById('addFilePath');
     const filePathInput = document.getElementById('filePathInput');
+    const filePickerButton = document.getElementById('filePickerButton');
+    const filePicker = document.getElementById('filePicker');
     const darkModeToggle = document.getElementById('darkModeToggle');
+    const modeIcon = document.getElementById('modeIcon');
 
-    // Lade gespeicherte Dateipfade aus dem Local Storage
+    // Load saved file paths and dark mode state from Local Storage
     loadFilePaths();
+    loadDarkModeState();
 
-    // Button zum Hinzufügen eines neuen Dateipfades
-    addFilePathButton.addEventListener('click', function () {
+    // Event listeners
+    addFilePathButton.addEventListener('click', handleAddFilePath);
+    filePickerButton.addEventListener('click', () => filePicker.click());
+    filePicker.addEventListener('change', handleFilePickerChange);
+    darkModeToggle.addEventListener('change', handleDarkModeToggle);
+
+    function handleAddFilePath() {
         const newFilePath = filePathInput.value;
         if (newFilePath) {
-            // Speichern des neuen Dateipfads
             saveFilePath(convertToFileURL(newFilePath));
             filePathInput.value = ''; // Clear the input field
         }
-    });
+    }
 
-    darkModeToggle.addEventListener('change', function () {
-        document.body.classList.toggle('dark-mode', darkModeToggle.checked);
-    });
+    function handleFilePickerChange(event) {
+        const files = event.target.files;
+        if (files.length > 0) {
+            filePathInput.value = files[0].webkitRelativePath || files[0].name;
+        }
+    }
+
+    function handleDarkModeToggle() {
+        const isDarkMode = darkModeToggle.checked;
+        document.body.classList.toggle('dark-mode', isDarkMode);
+        saveDarkModeState(isDarkMode);
+        updateModeIcon(isDarkMode);
+    }
 
     function convertToFileURL(filePath) {
         filePath = filePath.replace(/"/g, '');
         return 'file:///' + filePath.replace(/\\/g, '/');
     }
 
-    // Funktion zum Speichern eines Dateipfads in chrome.storage
     function saveFilePath(filePath) {
-        chrome.storage.local.get({ filePaths: [] }, function (result) {
+        chrome.storage.local.get({ filePaths: [] }, (result) => {
             const filePaths = result.filePaths;
             filePaths.push({ filePath: filePath, fileName: extractFileName(filePath) });
-            
-            chrome.storage.local.set({ filePaths: filePaths }, function () {
-                loadFilePaths(); // Lade die Dateipfade nach dem Speichern neu
-            });
+            chrome.storage.local.set({ filePaths: filePaths }, loadFilePaths);
         });
     }
 
-    // Funktion zum Laden der Dateipfade aus chrome.storage
     function loadFilePaths() {
-        chrome.storage.local.get({ filePaths: [] }, function (result) {
+        chrome.storage.local.get({ filePaths: [] }, (result) => {
             const filePaths = result.filePaths;
-            filePathsList.innerHTML = ''; // Liste zurücksetzen
+            filePathsList.innerHTML = ''; // Reset list
 
             if (filePaths.length === 0) {
                 const noFilePathsMessage = document.createElement('p');
                 noFilePathsMessage.textContent = 'No file paths saved.';
                 filePathsList.appendChild(noFilePathsMessage);
             } else {
-                filePaths.forEach(function (item, index) {
+                filePaths.forEach((item, index) => {
                     const li = document.createElement('li');
                     const link = document.createElement('a');
                     link.href = '#';
                     link.textContent = item.fileName; // Display the filename
-                    link.addEventListener('click', function () {
-                        openFile(item.filePath);
-                    });
+                    link.addEventListener('click', () => openFile(item.filePath));
 
-                    const deleteButton = document.createElement('button');
-                    deleteButton.textContent = 'Delete';
-                    deleteButton.addEventListener('click', function () {
-                        deleteFilePath(index);
-                    });
+                    const deleteIcon = document.createElement('img');
+                    deleteIcon.src = 'res/trash-light.png';
+                    deleteIcon.className = 'trash-icon';
+                    deleteIcon.addEventListener('click', () => deleteFilePath(index));
 
                     li.appendChild(link);
-                    li.appendChild(deleteButton);
+                    li.appendChild(deleteIcon);
                     filePathsList.appendChild(li);
                 });
             }
         });
     }
 
-    // Öffnet die Datei im neuen Tab
     function openFile(filePath) {
-        chrome.tabs.create({ url: filePath }, function () {
-            window.close(); // Schließt das Popup
-        });
+        chrome.tabs.create({ url: filePath }, () => window.close());
     }
 
-    // Funktion zum Löschen eines Dateipfads aus chrome.storage
     function deleteFilePath(index) {
-        chrome.storage.local.get({ filePaths: [] }, function (result) {
+        chrome.storage.local.get({ filePaths: [] }, (result) => {
             const filePaths = result.filePaths;
             filePaths.splice(index, 1);
-
-            chrome.storage.local.set({ filePaths: filePaths }, function () {
-                loadFilePaths(); // Lade die Dateipfade nach dem Löschen neu
-            });
+            chrome.storage.local.set({ filePaths: filePaths }, loadFilePaths);
         });
     }
 
-    // Funktion zum Extrahieren des Dateinamens aus dem Dateipfad
     function extractFileName(filePath) {
         return filePath.split('/').pop();
+    }
+
+    function saveDarkModeState(isDarkMode) {
+        chrome.storage.local.set({ darkMode: isDarkMode });
+    }
+
+    function loadDarkModeState() {
+        chrome.storage.local.get({ darkMode: false }, (result) => {
+            const isDarkMode = result.darkMode;
+            darkModeToggle.checked = isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            updateModeIcon(isDarkMode);
+        });
+    }
+
+    function updateModeIcon(isDarkMode) {
+        modeIcon.src = isDarkMode ? 'res/dark-mode-icon.png' : 'res/light-mode-icon.png';
     }
 });

@@ -7,11 +7,19 @@
     <script src="popup.js"></script>
 </head>
 <body>
-    <h1>Save Filepath</h1>
-    <!-- <label>
-        <input type="checkbox" id="darkModeToggle"> Dark Mode
-    </label> -->
-    <input type="text" id="filePathInput" placeholder='Enter file path e.g. "C:\Users\Username\Downloads\File.pdf"'>
+    <div class="header">
+        <h1>Save Filepath</h1>
+        <div class="dark-mode-container">
+            <img src="res/light-mode-icon.png" alt="Light Mode Icon" class="mode-icon" id="modeIcon">
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+    <input type="text" id="filePathInput" placeholder='File path e.g. "C:\Users\Username\Downloads\File.pdf"'>
+    <button id="filePickerButton">Pick File</button>
+    <input type="file" id="filePicker" webkitdirectory style="display: none;">
     <button id="addFilePath">Add Filepath</button>
     <h2>Saved Filepaths</h2>
     <ul id="filePathsList"></ul>

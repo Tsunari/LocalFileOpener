@@ -5,6 +5,7 @@
     "description": "Saves local files and opens them in the browser.",
     "permissions": [
       "tabs",
+      "downloads",
       "storage"
     ],
     "background": {

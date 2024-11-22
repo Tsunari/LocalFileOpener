@@ -22,6 +22,7 @@ export default [
     //         "no-undef": "error",
     //         "no-unused-expressions": "warn",
     //         "no-unused-labels": "warn",
+    //         "no-use-before-define": "error"
     //     }
     // },
 ];

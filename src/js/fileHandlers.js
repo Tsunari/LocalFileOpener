@@ -1,9 +1,9 @@
-import { pathTypeToggle } from './popup';
-import { loadFilePaths } from './storageHandlers';
-import { showSnackbar } from './uiHandlers';
+import { loadFilePaths } from './storageHandlers.js';
+import { showSnackbar } from './uiHandlers.js';
 
 
 export function convertToFileURL(filePath) {
+    const pathTypeToggle = document.getElementById('pathTypeToggle');
     filePath = filePath.replace(/"/g, '');
     if (!pathTypeToggle.checked) {
         return 'file:///' + filePath.replace(/\\/g, '/');

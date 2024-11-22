@@ -1,9 +1,9 @@
-
 import { handleFileClick } from './eventListeners.js';
 import { convertToFileURL, deleteFilePath, extractFileName, moveFilePath, openAllFilesInGroup } from './fileHandlers.js';
 import { updateModeIcon } from './uiHandlers.js';
 
-export function loadFilePaths(filePathsList) {
+export function loadFilePaths() {
+    const filePathsList = document.getElementById('filePathsList');
     chrome.storage.local.get({ filePaths: [], groups: [] }, (result) => {
         const filePaths = result.filePaths;
         const groups = result.groups;
@@ -64,7 +64,7 @@ export function loadFilePaths(filePathsList) {
                 deleteGroupIcon.className = 'trash-icon delete-group';
                 deleteGroupIcon.addEventListener('click', (event) => {
                     event.stopPropagation();
-                    deleteGroup(groupIndex, filePathsList);
+                    deleteGroup(groupIndex);
                 });
 
                 const actionsContainer = document.createElement('div');
@@ -155,17 +155,18 @@ export function loadFilePaths(filePathsList) {
     });
 }
 
-export function saveFilePaths(filePaths, filePathsList) {
+export function saveFilePaths(filePaths) {
     chrome.storage.local.get({ filePaths: [], groups: [] }, (result) => {
         const existingFilePaths = result.filePaths;
         filePaths.forEach(filePath => {
             existingFilePaths.push({ filePath: convertToFileURL(filePath), fileName: extractFileName(filePath) });
         });
-        chrome.storage.local.set({ filePaths: existingFilePaths }, loadFilePaths(filePathsList));
+        chrome.storage.local.set({ filePaths: existingFilePaths }, loadFilePaths);
     });
 }
 
-export function saveGroup(groupName, filePathsList) {
+export function saveGroup(groupName) {
+    const filePathsList = document.getElementById('filePathsList');
     chrome.storage.local.get({ groups: [] }, (result) => {
         const groups = result.groups;
         groups.push({ name: groupName, filePaths: [], collapsed: true, openInChromeGroup: false });
@@ -173,7 +174,8 @@ export function saveGroup(groupName, filePathsList) {
     });
 }
 
-function deleteGroup(groupIndex, filePathsList) {
+function deleteGroup(groupIndex) {
+    const filePathsList = document.getElementById('filePathsList');
     chrome.storage.local.get({ groups: [] }, (result) => {
         const groups = result.groups;
         groups.splice(groupIndex, 1);

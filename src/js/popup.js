@@ -1,4 +1,3 @@
-
 import { loadFilePaths, loadDarkModeState, loadTextareaInput, loadPathTypeState } from './storageHandlers.js';
 import { handleAddFilePath, handleAddGroup, handleFilePickerChange, handleDarkModeToggle, handleTextareaInput, handlePathTypeToggle, handleFilePickerButton } from './eventListeners.js';
 
@@ -15,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const filePathsList = document.getElementById('filePathsList');
 
     // Load saved file paths, dark mode state, and textarea input from Local Storage
-    loadFilePaths(filePathsList);
+    loadFilePaths();
     loadDarkModeState(darkModeToggle, modeIcon);
     loadTextareaInput(filePathInput);
     loadPathTypeState(pathTypeToggle);

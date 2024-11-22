@@ -1,7 +1,6 @@
 import { loadFilePaths } from './storageHandlers.js';
 import { showSnackbar } from './uiHandlers.js';
 
-
 export function convertToFileURL(filePath) {
     const pathTypeToggle = document.getElementById('pathTypeToggle');
     filePath = filePath.replace(/"/g, '');

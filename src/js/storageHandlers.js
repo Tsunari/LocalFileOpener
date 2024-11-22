@@ -166,20 +166,18 @@ export function saveFilePaths(filePaths) {
 }
 
 export function saveGroup(groupName) {
-    const filePathsList = document.getElementById('filePathsList');
     chrome.storage.local.get({ groups: [] }, (result) => {
         const groups = result.groups;
         groups.push({ name: groupName, filePaths: [], collapsed: true, openInChromeGroup: false });
-        chrome.storage.local.set({ groups: groups }, loadFilePaths(filePathsList));
+        chrome.storage.local.set({ groups: groups }, loadFilePaths);
     });
 }
 
-function deleteGroup(groupIndex) {
-    const filePathsList = document.getElementById('filePathsList');
+function deleteGroup(groupIndex) {;
     chrome.storage.local.get({ groups: [] }, (result) => {
         const groups = result.groups;
         groups.splice(groupIndex, 1);
-        chrome.storage.local.set({ groups: groups }, loadFilePaths(filePathsList));
+        chrome.storage.local.set({ groups: groups }, loadFilePaths);
     });
 }
 

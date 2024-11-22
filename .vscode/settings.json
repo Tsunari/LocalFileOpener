@@ -1,0 +1,10 @@
+{
+    "eslint.enable": true,
+    "eslint.validate": [
+        "javascript",
+        "html",
+    ],
+    "eslint.codeAction.showDocumentation": {
+        "enable": true
+    }
+}

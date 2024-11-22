@@ -25,13 +25,23 @@ export function loadFilePaths() {
 
                 const groupHeader = document.createElement('div');
                 groupHeader.className = 'group-header';
-                groupHeader.textContent = group.name;
+                const groupHeaderText = document.createElement('span');
+                groupHeaderText.textContent = group.name;
+                groupHeader.appendChild(groupHeaderText);
                 groupHeader.addEventListener('click', () => {
                     groupElement.classList.toggle('collapsed');
                     groupElement.classList.toggle('expanded');
                     group.collapsed = !group.collapsed;
                     saveGroups(groups);
                 });
+
+                const editGroupIcon = createEditIcon(() => {
+                    const newGroupName = prompt('Enter new group name:', group.name);
+                    if (newGroupName) {
+                        updateGroupName(groupIndex, newGroupName);
+                    }
+                });
+                groupHeaderText.appendChild(editGroupIcon); // Move icon closer to the text
 
                 const openAllButton = document.createElement('button');
                 openAllButton.textContent = 'Open All';
@@ -87,6 +97,19 @@ export function loadFilePaths() {
                     link.addEventListener('click', (event) => handleFileClick(event, item.filePath));
                     link.addEventListener('auxclick', (event) => handleFileClick(event, item.filePath)); // Handle middle-click
 
+                    const linkContainer = document.createElement('span');
+                    linkContainer.style.display = 'flex';
+                    linkContainer.style.alignItems = 'center';
+                    linkContainer.appendChild(link);
+                    const editFileIcon = createEditIcon(() => {
+                        const newFileName = prompt('Enter new file name:', item.fileName);
+                        if (newFileName) {
+                            updateFileName(groupIndex, index, newFileName);
+                        }
+                    });
+                    linkContainer.appendChild(editFileIcon);
+                    li.appendChild(linkContainer);
+
                     const deleteIcon = document.createElement('img');
                     deleteIcon.src = 'res/trash-light.png';
                     deleteIcon.className = 'trash-icon';
@@ -108,7 +131,6 @@ export function loadFilePaths() {
                     actionsContainer.appendChild(moveDropdown);
                     actionsContainer.appendChild(deleteIcon);
 
-                    li.appendChild(link);
                     li.appendChild(actionsContainer);
                     groupContent.appendChild(li);
                 });
@@ -125,6 +147,19 @@ export function loadFilePaths() {
                 link.textContent = item.fileName; // Display the filename
                 link.addEventListener('click', (event) => handleFileClick(event, item.filePath));
                 link.addEventListener('auxclick', (event) => handleFileClick(event, item.filePath)); // Handle middle-click
+
+                const linkContainer = document.createElement('span');
+                linkContainer.style.display = 'flex';
+                linkContainer.style.alignItems = 'center';
+                linkContainer.appendChild(link);
+                const editFileIcon = createEditIcon(() => {
+                    const newFileName = prompt('Enter new file name:', item.fileName);
+                    if (newFileName) {
+                        updateFileName(null, index, newFileName);
+                    }
+                });
+                linkContainer.appendChild(editFileIcon);
+                li.appendChild(linkContainer);
 
                 const deleteIcon = document.createElement('img');
                 deleteIcon.src = 'res/trash-light.png';
@@ -147,7 +182,6 @@ export function loadFilePaths() {
                 actionsContainer.appendChild(moveDropdown);
                 actionsContainer.appendChild(deleteIcon);
 
-                li.appendChild(link);
                 li.appendChild(actionsContainer);
                 filePathsList.appendChild(li);
             });
@@ -183,6 +217,36 @@ function deleteGroup(groupIndex) {;
 
 function saveGroups(groups) {
     chrome.storage.local.set({ groups: groups });
+}
+
+function createEditIcon(onClick) {
+    const editIcon = document.createElement('span');
+    editIcon.className = 'material-symbols-outlined';
+    editIcon.textContent = 'edit';
+    editIcon.style.cursor = 'pointer';
+    editIcon.style.fontSize = '15px'; // Adjust size as needed
+    editIcon.style.color = getComputedStyle(document.body).getPropertyValue('--icon-color'); // Theme-sensitive color
+    editIcon.style.marginLeft = '5px'; // Adjust margin as needed
+    editIcon.addEventListener('click', onClick);
+    return editIcon;
+}
+
+function updateFileName(groupIndex, fileIndex, newFileName) {
+    chrome.storage.local.get({ filePaths: [], groups: [] }, (result) => {
+        if (groupIndex !== null) {
+            result.groups[groupIndex].filePaths[fileIndex].fileName = newFileName;
+        } else {
+            result.filePaths[fileIndex].fileName = newFileName;
+        }
+        chrome.storage.local.set({ filePaths: result.filePaths, groups: result.groups }, loadFilePaths);
+    });
+}
+
+function updateGroupName(groupIndex, newGroupName) {
+    chrome.storage.local.get({ groups: [] }, (result) => {
+        result.groups[groupIndex].name = newGroupName;
+        chrome.storage.local.set({ groups: result.groups }, loadFilePaths);
+    });
 }
 
 export function loadDarkModeState(darkModeToggle, modeIcon) {

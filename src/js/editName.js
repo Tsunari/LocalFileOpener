@@ -8,7 +8,10 @@ export function createEditIcon(onClick) {
     editIcon.style.fontSize = '15px'; // Adjust size as needed
     editIcon.style.color = getComputedStyle(document.body).getPropertyValue('--icon-color'); // Theme-sensitive color
     editIcon.style.marginLeft = '5px'; // Adjust margin as needed
-    editIcon.addEventListener('click', onClick);
+    editIcon.addEventListener('click', (event) => {
+        event.stopPropagation(); // Stop event propagation to prevent collapsing
+        onClick();
+    });
     return editIcon;
 }
 

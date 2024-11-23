@@ -122,12 +122,17 @@ export function createFilePathElement(item, groupIndex, index, groups) {
     deleteIcon.addEventListener('click', () => deleteFilePath(groupIndex, index));
 
     const moveDropdown = document.createElement('select');
-    moveDropdown.innerHTML = `<option value="">Move to...</option><option value="main">Main List</option>`;
-    groups.forEach((group, groupIndex) => {
-        const option = document.createElement('option');
-        option.value = groupIndex;
-        option.textContent = group.name;
-        moveDropdown.appendChild(option);
+    moveDropdown.innerHTML = `<option value="">Move to...</option>`;
+    if (groupIndex !== null) {
+        moveDropdown.innerHTML += `<option value="main">Main List</option>`;
+    }
+    groups.forEach((group, idx) => {
+        if (idx !== groupIndex) {
+            const option = document.createElement('option');
+            option.value = idx;
+            option.textContent = group.name;
+            moveDropdown.appendChild(option);
+        }
     });
     moveDropdown.addEventListener('change', (event) => moveFilePath(groupIndex, index, event.target.value));
 

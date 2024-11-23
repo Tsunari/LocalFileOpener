@@ -15,19 +15,20 @@ This is a simple Chrome extension that allows users to store, manage, and open l
 2. **Store the path**: The file path is saved in Chrome's local storage for persistent access.
 3. **View saved file paths**: Saved file paths are listed in the popup, and each path can be clicked to open the corresponding file in a new tab.
 4. **Support for Windows paths**: File paths entered in Windows format (e.g., `C:\Users\Username\Documents\File.pdf`) are automatically converted to the `file:///` URL format.
+5. Webpage paths can also be saved and opened. For this just toggle the Web Path switch.
 
 ## Installation
 
-1. Download or clone the repository. (Download here https://github.com/Tsunari/LocalFileOpener/releases/latest)
+1. [Download the latest release](https://github.com/Tsunari/LocalFileOpener/releases/latest) or clone the repository. 
 2. Navigate to `chrome://extensions/` in your Chrome browser.
 3. Enable **Developer mode** at the top right.
-4. Click **Load unpacked** and select the directory where the extension files are located.
+4. Click **Load unpacked** and select the `src` directory.
 5. The extension icon should appear in your browser's toolbar.
 
 ## Usage
 
 - Click the extension icon to open the popup.
-- Enter the file path in the provided input field and click **Save** to add it to the list.
+- Enter path in the provided input field and click **Save** to add it to the list.
 - Click on any saved file path to open it in a new tab.
 
 ## Technologies Used

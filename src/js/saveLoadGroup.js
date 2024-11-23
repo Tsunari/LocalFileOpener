@@ -1,3 +1,4 @@
+import { loadFilePaths } from './storageHandlers.js';
 
 export function createSaveIcon(onClick) {
     const saveIcon = document.createElement('span');
@@ -24,3 +25,37 @@ export function saveGroupToFile(group) {
     a.click();
     URL.revokeObjectURL(url);
 }
+
+export function loadGroupFromFile(file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            const group = JSON.parse(event.target.result);
+            chrome.storage.local.get({ groups: [] }, (result) => {
+                const groups = result.groups;
+                const existingGroup = groups.find(g => g.name === group.name);
+                if (!existingGroup) {
+                    groups.push(group);
+                    chrome.storage.local.set({ groups: groups }, loadFilePaths);
+                } else {
+                    console.warn('Group with the same name already exists.');
+                }
+            });
+        } catch (error) {
+            console.error('Error parsing JSON file:', error);
+        }
+    };
+    reader.readAsText(file);
+}
+
+document.getElementById('loadGroupButton').addEventListener('click', () => {
+    document.getElementById('loadGroupInput').click();
+});
+
+document.getElementById('loadGroupInput').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        loadGroupFromFile(file);
+        event.target.value = ''; // Reset the input value to allow loading the same file again
+    }
+});

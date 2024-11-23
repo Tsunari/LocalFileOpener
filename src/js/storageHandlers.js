@@ -2,7 +2,7 @@ import { handleFileClick } from './eventListeners.js';
 import { convertToFileURL, deleteFilePath, extractFileName, moveFilePath, openAllFilesInGroup } from './fileHandlers.js';
 import { updateModeIcon } from './uiHandlers.js';
 import { createEditIcon, updateFileName, updateGroupName } from './editName.js';
-import { createSaveIcon, saveGroupToFile } from './saveLoadGroup.js';
+import { createSaveIcon, saveGroupToFile, loadGroupFromFile } from './saveLoadGroup.js';
 import { createGroupElement, createFilePathElement } from './filePathsList.js';
 
 export function loadFilePaths() {

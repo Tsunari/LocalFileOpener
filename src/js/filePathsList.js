@@ -112,8 +112,9 @@ export function createFilePathElement(item, groupIndex, index, groups) {
     linkContainer.appendChild(link);
     const editFileIcon = createEditIcon(() => {
         const newFileName = prompt('Enter new file name:', item.fileName);
-        if (newFileName) {
-            updateFileName(groupIndex, index, newFileName);
+        const newFilePath = prompt('Enter new file path:', item.filePath);
+        if (newFileName && newFilePath) {
+            updateFileName(groupIndex, index, newFileName, newFilePath);
         }
     });
     linkContainer.appendChild(editFileIcon);

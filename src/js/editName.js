@@ -15,12 +15,14 @@ export function createEditIcon(onClick) {
     return editIcon;
 }
 
-export function updateFileName(groupIndex, fileIndex, newFileName) {
+export function updateFileName(groupIndex, fileIndex, newFileName, newFilePath) {
     chrome.storage.local.get({ filePaths: [], groups: [] }, (result) => {
         if (groupIndex !== null) {
             result.groups[groupIndex].filePaths[fileIndex].fileName = newFileName;
+            result.groups[groupIndex].filePaths[fileIndex].filePath = newFilePath;
         } else {
             result.filePaths[fileIndex].fileName = newFileName;
+            result.filePaths[fileIndex].filePath = newFilePath;
         }
         chrome.storage.local.set({ filePaths: result.filePaths, groups: result.groups }, loadFilePaths);
     });

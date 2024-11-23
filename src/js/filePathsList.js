@@ -1,5 +1,5 @@
 import { handleFileClick } from './eventListeners.js';
-import { createEditIcon, updateFileName, updateGroupName } from './editName.js';
+import { createEditIcon, updateFileName, updateGroupName, openEditFileModal } from './editName.js';
 import { createSaveIcon, saveGroupToFile } from './saveLoadGroup.js';
 import { openAllFilesInGroup } from './fileHandlers.js';
 import { deleteFilePath, moveFilePath } from './fileHandlers.js';
@@ -111,11 +111,7 @@ export function createFilePathElement(item, groupIndex, index, groups) {
     linkContainer.style.alignItems = 'center';
     linkContainer.appendChild(link);
     const editFileIcon = createEditIcon(() => {
-        const newFileName = prompt('Enter new file name:', item.fileName);
-        const newFilePath = prompt('Enter new file path:', item.filePath);
-        if (newFileName && newFilePath) {
-            updateFileName(groupIndex, index, newFileName, newFilePath);
-        }
+        openEditFileModal(groupIndex, index, item.fileName, item.filePath);
     });
     linkContainer.appendChild(editFileIcon);
     li.appendChild(linkContainer);

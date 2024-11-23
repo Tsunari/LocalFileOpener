@@ -34,3 +34,35 @@ export function updateGroupName(groupIndex, newGroupName) {
         chrome.storage.local.set({ groups: result.groups }, loadFilePaths);
     });
 }
+
+export function openEditFileModal(groupIndex, fileIndex, currentFileName, currentFilePath) {
+    const modal = document.getElementById('editFileModal');
+    const closeModal = document.getElementsByClassName('close')[0];
+    const saveButton = document.getElementById('saveFileChanges');
+    const newFileNameInput = document.getElementById('newFileName');
+    const newFilePathInput = document.getElementById('newFilePath');
+
+    newFileNameInput.value = currentFileName;
+    newFilePathInput.value = currentFilePath;
+
+    modal.style.display = 'block';
+
+    closeModal.onclick = () => {
+        modal.style.display = 'none';
+    };
+
+    window.onclick = (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    saveButton.onclick = () => {
+        const newFileName = newFileNameInput.value;
+        const newFilePath = newFilePathInput.value;
+        if (newFileName && newFilePath) {
+            updateFileName(groupIndex, fileIndex, newFileName, newFilePath);
+            modal.style.display = 'none';
+        }
+    };
+}

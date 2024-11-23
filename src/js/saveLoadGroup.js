@@ -1,4 +1,5 @@
 import { loadFilePaths } from './storageHandlers.js';
+import { showSnackbar } from './uiHandlers.js';
 
 export function createSaveIcon(onClick) {
     const saveIcon = document.createElement('span');
@@ -38,7 +39,7 @@ export function loadGroupFromFile(file) {
                     groups.push(group);
                     chrome.storage.local.set({ groups: groups }, loadFilePaths);
                 } else {
-                    console.warn('Group with the same name already exists.');
+                    showSnackbar('Group with same name already exists.');
                 }
             });
         } catch (error) {
